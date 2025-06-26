@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeMaster - Order Result</title>
+    <title>TradeTech-Circuit - Order Result</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -56,6 +56,7 @@
         }
         .flash.success { background-color: #e6f3e6; color: #2a9d8f; }
         .flash.error { background-color: #ffebee; color: #e76f51; }
+        .flash.info { background-color: #e7f0fa; color: #1a2a44; }
         a {
             display: inline-block;
             margin-top: 15px;
@@ -64,18 +65,90 @@
             font-weight: 500;
         }
         a:hover { text-decoration: underline; }
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            background-color: #2a9d8f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .chat-icon:hover {
+            background-color: #264653;
+        }
+        .chat-window {
+            display: none;
+            position: fixed;
+            bottom: 110px;
+            right: 20px;
+            width: 400px;
+            height: 450px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            flex-direction: column;
+            z-index: 1000;
+        }
+        .chat-header {
+            background-color: #1a2a44;
+            color: white;
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: 500;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            line-height: 1.6;
+        }
+        .chat-message {
+            margin: 10px 0;
+            padding: 12px;
+            border-radius: 6px;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+        .chat-message.user { background-color: #e7f0fa; align-self: flex-end; }
+        .chat-message.bot { background-color: #e6f3e6; align-self: flex-start; }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+        }
+        .chat-input input {
+            flex-grow: 1;
+            margin-right: 10px;
+            padding: 8px;
+            font-size: 14px;
+        }
+        .chat-window.active { display: flex; }
         @media (max-width: 600px) {
             .container { padding: 10px; }
             .nav a { margin: 0 10px; }
+            .chat-window { width: 90%; right: 5%; }
+            .chat-icon { width: 60px; height: 60px; font-size: 24px; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>TradeMaster - Order Result</h1>
+        <h1>TradeTech-Circuit - Order Result</h1>
     </header>
     <div class="container">
         <div class="nav">
+            <a href="{{ url_for('index') }}">Trade</a>
             <a href="{{ url_for('live_log') }}">Live Log</a>
         </div>
         {% with messages = get_flashed_messages(with_categories=true) %}
@@ -104,5 +177,49 @@
         </div>
         <a href="{{ url_for('index') }}">Back to Trading</a>
     </div>
+    <div class="chat-icon" onclick="toggleChat()">💬</div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">TradeTech-Circuit Bot</div>
+        <div class="chat-messages" id="chatMessages">Type a command or type 'help' for sample commands.</div>
+        <form class="chat-input" id="chatForm">
+            <input type="text" name="command" placeholder="Type your command..." required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <script>
+        function toggleChat() {
+            const chatWindow = document.getElementById('chatWindow');
+            chatWindow.classList.toggle('active');
+        }
+
+        document.getElementById('chatForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = this;
+            const command = form.querySelector('input[name="command"]').value;
+            const chatMessages = document.getElementById('chatMessages');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'chat-message user';
+            userMessage.textContent = command;
+            chatMessages.appendChild(userMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            fetch('/process_command', {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const botMessage = document.createElement('div');
+                botMessage.className = 'chat-message bot';
+                botMessage.textContent = data.response;
+                chatMessages.appendChild(botMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                form.querySelector('input[name="command"]').value = '';
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
 </body>
 </html>
