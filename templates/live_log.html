@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeMaster - Live Trading Log</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #1a2a44;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid #f4a261;
+        }
+        .nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #f4a261;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        .nav a:hover {
+            color: #e76f51;
+        }
+        .log-entry {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .note {
+            color: #666;
+            font-style: italic;
+            margin-top: 10px;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .nav a { margin: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TradeMaster - Live Trading Log</h1>
+    </header>
+    <div class="container">
+        <div class="nav">
+            <a href="{{ url_for('index') }}">Trade</a>
+        </div>
+        {% for log in logs %}
+            <div class="log-entry">{{ log | safe }}</div>
+        {% endfor %}
+        {% if not logs %}
+            <p class="log-entry">No live logs available yet.</p>
+        {% endif %}
+        <p class="note">For previous logs, refer to file trading_bot.log</p>
+    </div>
+</body>
+</html>

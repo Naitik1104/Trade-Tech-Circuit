@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeMaster - Order Result</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #1a2a44;
+            color: white;
+            padding: 15px 0;
+            text-align: center;
+            border-bottom: 2px solid #f4a261;
+        }
+        .nav {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #f4a261;
+            font-weight: 500;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+        .nav a:hover {
+            color: #e76f51;
+        }
+        .order-details {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .order-details h2 { color: #1a2a44; }
+        .order-details p { margin: 10px 0; font-size: 14px; }
+        .flash {
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .flash.success { background-color: #e6f3e6; color: #2a9d8f; }
+        .flash.error { background-color: #ffebee; color: #e76f51; }
+        a {
+            display: inline-block;
+            margin-top: 15px;
+            color: #2a9d8f;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        a:hover { text-decoration: underline; }
+        @media (max-width: 600px) {
+            .container { padding: 10px; }
+            .nav a { margin: 0 10px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TradeMaster - Order Result</h1>
+    </header>
+    <div class="container">
+        <div class="nav">
+            <a href="{{ url_for('live_log') }}">Live Log</a>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="flash {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="order-details">
+            <h2>Order Details</h2>
+            <p><strong>Order ID:</strong> {{ order.order_id }}</p>
+            <p><strong>Symbol:</strong> {{ order.symbol }}</p>
+            <p><strong>Side:</strong> {{ order.side }}</p>
+            <p><strong>Type:</strong> {{ order.type }}</p>
+            <p><strong>Quantity:</strong> {{ order.quantity }}</p>
+            {% if order.price %}
+                <p><strong>Price:</strong> {{ order.price }}</p>
+            {% endif %}
+            {% if order.stop_price %}
+                <p><strong>Stop Price:</strong> {{ order.stop_price }}</p>
+            {% endif %}
+            <p><strong>Status:</strong> {{ order.status }}</p>
+            <p><strong>Time:</strong> {{ order.time }}</p>
+        </div>
+        <a href="{{ url_for('index') }}">Back to Trading</a>
+    </div>
+</body>
+</html>
