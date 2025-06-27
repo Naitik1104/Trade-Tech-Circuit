@@ -39,7 +39,7 @@ Built using Python and Flask, it integrates with the Binance API and provides a 
 | ├── `index.html`       | Main trading interface (home page)                       |
 | ├── `order_result.html`| Displays order confirmation and details                  |
 | └── `live_log.html`    | Real-time trading log interface                          |
-| `.env.example`                 | Example format API credentials (not committed to version control)       |
+| `.env.example`         | Example format API credentials (not committed to version control)       |
 | `requirements.txt`     | List of required Python packages                         |
 | `trading_bot.log`      | Log file storing API activity and errors                 |
 | `README.md`            | Project documentation (this file)                        |
